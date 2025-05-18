@@ -1,10 +1,14 @@
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import numpy as np
 from sklearn.cluster import KMeans
 import sys
 
 def extrair_cores(imagem, n_cores=5):
-    img = Image.open(imagem).convert('RGB')
+    try:
+        img = Image.open(imagem).convert('RGB')
+    except (FileNotFoundError, UnidentifiedImageError, OSError):
+        print(f"Error: file '{imagem}' not found or cannot be opened.", file=sys.stderr)
+        sys.exit(1)
     img = img.resize((200, 200))
     pixels = np.array(img).reshape(-1, 3)
     kmeans = KMeans(n_clusters=n_cores, n_init="auto")
