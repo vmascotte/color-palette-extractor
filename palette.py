@@ -2,6 +2,7 @@ from PIL import Image, UnidentifiedImageError
 import numpy as np
 from sklearn.cluster import KMeans
 import argparse
+import sys
 
 def extrair_cores(imagem, n_cores=5):
     try:
