@@ -1,7 +1,7 @@
 from PIL import Image
 import numpy as np
 from sklearn.cluster import KMeans
-import sys
+import argparse
 
 def extrair_cores(imagem, n_cores=5):
     img = Image.open(imagem).convert('RGB')
@@ -14,8 +14,24 @@ def extrair_cores(imagem, n_cores=5):
         r, g, b = cor
         print(f'#{r:02x}{g:02x}{b:02x}')
 
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Uso: python palette.py imagem.jpg")
-    else:
-        extrair_cores(sys.argv[1])
+def main():
+    parser = argparse.ArgumentParser(
+        description="Extract a color palette from an image"
+    )
+    parser.add_argument(
+        "image",
+        help="Path to the image file"
+    )
+    parser.add_argument(
+        "n_cores",
+        nargs="?",
+        type=int,
+        default=5,
+        help="Number of colors to extract (default: 5)"
+    )
+    args = parser.parse_args()
+    extrair_cores(args.image, args.n_cores)
+
+
+if __name__ == "__main__":
+    main()
