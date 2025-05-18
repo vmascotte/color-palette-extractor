@@ -1,0 +1,46 @@
+# Color Palette Extractor
+
+Este projeto tem como objetivo extrair uma paleta de cores dominante de uma imagem usando KMeans.
+
+## Requisitos de ambiente
+
+- Python 3.8 ou superior
+- `pip` para instalar as dependências
+
+### Dependências
+
+As bibliotecas necessárias estão listadas em `requirements.txt`:
+
+```
+pillow
+numpy
+scikit-learn
+```
+
+É recomendado usar um ambiente virtual:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Uso
+
+Para extrair as cores de uma imagem, execute:
+
+```bash
+python palette.py caminho/da/imagem
+```
+
+Por exemplo, usando a imagem de exemplo fornecida (`1.PNG`):
+
+```bash
+python palette.py 1.PNG
+```
+
+O script exibirá as cores encontradas em formato hexadecimal, uma por linha.
+
+## Objetivo do projeto
+
+O propósito deste repositório é demonstrar como identificar as cores predominantes de uma imagem utilizando clustering (via KMeans). 
