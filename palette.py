@@ -20,7 +20,7 @@ def extrair_cores(imagem, n_cores=5):
         n_cores = n_cores_max
     kmeans = KMeans(n_clusters=n_cores, n_init="auto")
     kmeans.fit(pixels)
-    cores = kmeans.cluster_centers_.astype(int)
+    cores = np.clip(np.rint(kmeans.cluster_centers_), 0, 255).astype(int)
     for cor in cores:
         r, g, b = cor
         print(f'#{r:02x}{g:02x}{b:02x}')
