@@ -63,7 +63,7 @@ Execute:
 python web_ui.py
 ```
 
-Uma página será aberta exibindo um seletor de imagem e o número de cores desejado. Após enviar a imagem, as cores extraídas aparecerão na tela.
+O navegador padrão será aberto automaticamente, exibindo um seletor de imagem e o número de cores desejado. Após enviar a imagem, as cores extraídas aparecerão na tela.
 
 ## Uso simplificado no Windows
 

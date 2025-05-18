@@ -20,7 +20,7 @@ def main():
         saida = gr.HTML()
         executar = gr.Button("Extrair Cores")
         executar.click(gerar_paleta, [entrada_imagem, entrada_num_cores], saida)
-    demo.launch()
+    demo.launch(inbrowser=True)
 
 
 if __name__ == "__main__":
