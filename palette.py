@@ -12,6 +12,12 @@ def extrair_cores(imagem, n_cores=5, random_state=None):
         sys.exit(1)
     img = img.resize((200, 200))
     pixels = np.array(img).reshape(-1, 3)
+    if n_cores < 1:
+        print(
+            "N\u00famero de cores deve ser no m\u00ednimo 1.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
     n_cores_max = len(np.unique(pixels, axis=0))
     if n_cores > n_cores_max:
         print(
