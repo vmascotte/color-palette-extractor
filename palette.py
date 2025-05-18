@@ -28,9 +28,11 @@ def extrair_cores(imagem, n_cores=5, random_state=None):
     kmeans = KMeans(n_clusters=n_cores, n_init="auto", random_state=random_state)
     kmeans.fit(pixels)
     cores = np.clip(np.rint(kmeans.cluster_centers_), 0, 255).astype(int)
+    hex_cores = []
     for cor in cores:
         r, g, b = cor
-        print(f'#{r:02x}{g:02x}{b:02x}')
+        hex_cores.append(f'#{r:02x}{g:02x}{b:02x}')
+    return hex_cores
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -47,4 +49,5 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    extrair_cores(args.imagem, args.num_cores, args.random_state)
+    for cor in extrair_cores(args.imagem, args.num_cores, args.random_state):
+        print(cor)
