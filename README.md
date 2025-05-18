@@ -65,6 +65,10 @@ python web_ui.py
 
 O navegador padrão será aberto automaticamente, exibindo um seletor de imagem e o número de cores desejado. Após enviar a imagem, as cores extraídas aparecerão na tela.
 
+### Atualização do programa
+
+Se o projeto foi clonado via `git`, a interface conta com um botão **Atualizar Programa** que executa `git pull` para baixar eventuais mudanças do repositório.
+
 ## Uso simplificado no Windows
 
 Para facilitar a execução em máquinas Windows, este repositório inclui o arquivo
