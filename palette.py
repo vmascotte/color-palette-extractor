@@ -1,7 +1,7 @@
 from PIL import Image
 import numpy as np
 from sklearn.cluster import KMeans
-import sys
+import argparse
 
 def extrair_cores(imagem, n_cores=5):
     img = Image.open(imagem).convert('RGB')
@@ -22,7 +22,14 @@ def extrair_cores(imagem, n_cores=5):
         print(f'#{r:02x}{g:02x}{b:02x}')
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Uso: python palette.py imagem.jpg")
-    else:
-        extrair_cores(sys.argv[1])
+    parser = argparse.ArgumentParser(
+        description='Extrai as cores dominantes de uma imagem.'
+    )
+    parser.add_argument('imagem', help='Caminho da imagem.')
+    parser.add_argument(
+        '-n', '--num-cores', type=int, default=5,
+        help='N\u00famero de cores desejado.'
+    )
+    args = parser.parse_args()
+
+    extrair_cores(args.imagem, args.num_cores)
