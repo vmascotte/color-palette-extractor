@@ -39,6 +39,18 @@ Por exemplo, usando a imagem de exemplo fornecida (`1.PNG`):
 python palette.py 1.PNG
 ```
 
+### Saída determinística
+
+Para obter os mesmos resultados em execuções subsequentes, forneça um
+`random_state` para o KMeans:
+
+```bash
+python palette.py 1.PNG -r 42
+python palette.py 1.PNG -r 42
+```
+
+As cores impressas serão as mesmas nas duas execuções.
+
 O script exibirá as cores encontradas em formato hexadecimal, uma por linha.
 
 ## Objetivo do projeto

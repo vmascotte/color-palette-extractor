@@ -2,8 +2,9 @@ from PIL import Image, UnidentifiedImageError
 import numpy as np
 from sklearn.cluster import KMeans
 import argparse
+import sys
 
-def extrair_cores(imagem, n_cores=5):
+def extrair_cores(imagem, n_cores=5, random_state=None):
     try:
         img = Image.open(imagem).convert('RGB')
     except (FileNotFoundError, UnidentifiedImageError, OSError):
@@ -18,7 +19,7 @@ def extrair_cores(imagem, n_cores=5):
             f"Ajustando para {n_cores_max}."
         )
         n_cores = n_cores_max
-    kmeans = KMeans(n_clusters=n_cores, n_init="auto")
+    kmeans = KMeans(n_clusters=n_cores, n_init="auto", random_state=random_state)
     kmeans.fit(pixels)
     cores = np.clip(np.rint(kmeans.cluster_centers_), 0, 255).astype(int)
     for cor in cores:
@@ -34,6 +35,10 @@ if __name__ == '__main__':
         '-n', '--num-cores', type=int, default=5,
         help='N\u00famero de cores desejado.'
     )
+    parser.add_argument(
+        '-r', '--random-state', type=int, default=None,
+        help='Valor para o random_state do KMeans.'
+    )
     args = parser.parse_args()
 
-    extrair_cores(args.imagem, args.num_cores)
+    extrair_cores(args.imagem, args.num_cores, args.random_state)
