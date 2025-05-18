@@ -1,4 +1,4 @@
-from PIL import Image, UnidentifiedImageError
+from PIL import Image, UnidentifiedImageError, ImageDraw
 import numpy as np
 from sklearn.cluster import KMeans
 import argparse
@@ -33,6 +33,31 @@ def extrair_cores(imagem, n_cores=5, random_state=None):
         r, g, b = cor
         hex_cores.append(f'#{r:02x}{g:02x}{b:02x}')
     return hex_cores
+
+
+def save_palette(img_path, hexes):
+    """Gera uma imagem PNG com blocos coloridos da paleta.
+
+    Parameters
+    ----------
+    img_path : str
+        Caminho do arquivo PNG a ser salvo.
+    hexes : list[str]
+        Lista de cores em formato hexadecimal (#rrggbb).
+    """
+
+    if not hexes:
+        raise ValueError("Lista de cores vazia.")
+
+    block_size = 50
+    width = block_size * len(hexes)
+    height = block_size
+    img = Image.new("RGB", (width, height), "white")
+    draw = ImageDraw.Draw(img)
+    for idx, color in enumerate(hexes):
+        x0 = idx * block_size
+        draw.rectangle([x0, 0, x0 + block_size, height], fill=color)
+    img.save(img_path, format="PNG")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(

@@ -54,6 +54,17 @@ As cores impressas serão as mesmas nas duas execuções.
 
 O script exibirá as cores encontradas em formato hexadecimal, uma por linha.
 
+### Gerar imagem da paleta
+
+É possível salvar a paleta em um arquivo PNG usando a função `save_palette`:
+
+```python
+from palette import extrair_cores, save_palette
+
+cores = extrair_cores("1.PNG")
+save_palette("paleta.png", cores)
+```
+
 ## Interface Web
 
 Também é possível utilizar uma interface simples no navegador para extrair a paleta de cores.
@@ -63,7 +74,7 @@ Execute:
 python web_ui.py
 ```
 
-O navegador padrão será aberto automaticamente, exibindo um seletor de imagem e o número de cores desejado. Após enviar a imagem, as cores extraídas aparecerão na tela.
+O navegador padrão será aberto automaticamente, exibindo um seletor de imagem e o número de cores desejado. Após enviar a imagem, as cores extraídas aparecerão na tela. Há também um campo para definir o nome do arquivo de saída e um botão **Salvar Paleta**, que gera uma imagem PNG com as cores exibidas.
 
 ### Atualização do programa
 
