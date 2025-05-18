@@ -14,7 +14,7 @@ As bibliotecas necessárias estão listadas em `requirements.txt`:
 ```
 pillow
 numpy
-scikit-learn
+scikit-learn>=1.4
 ```
 
 É recomendado usar um ambiente virtual:
