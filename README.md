@@ -16,6 +16,7 @@ pillow
 numpy
 scikit-learn>=1.4
 gradio
+matplotlib
 ```
 
 É recomendado usar um ambiente virtual:
@@ -53,6 +54,11 @@ python palette.py 1.PNG -r 42
 As cores impressas serão as mesmas nas duas execuções.
 
 O script exibirá as cores encontradas em formato hexadecimal, uma por linha.
+Para visualizar um gráfico de pizza com a porcentagem de cada cor, utilize a opção `--grafico`:
+
+```bash
+python palette.py 1.PNG --grafico
+```
 
 ### Gerar imagem da paleta
 
@@ -75,6 +81,7 @@ python web_ui.py
 ```
 
 O navegador padrão será aberto automaticamente, exibindo um seletor de imagem e o número de cores desejado. Após enviar a imagem, as cores extraídas aparecerão na tela. Há também um campo para definir o nome do arquivo de saída e um botão **Salvar Paleta**, que gera uma imagem PNG com as cores exibidas.
+Um gráfico de pizza mostrando a porcentagem de cada cor é exibido junto da paleta.
 
 ### Atualização do programa
 

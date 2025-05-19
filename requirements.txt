@@ -2,3 +2,5 @@ pillow
 numpy
 scikit-learn>=1.4
 gradio
+matplotlib
+matplotlib
