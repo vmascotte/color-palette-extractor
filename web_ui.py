@@ -8,6 +8,20 @@ import subprocess
 import os
 import json
 
+REPO_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def find_git_root(start_dir=REPO_DIR):
+    """Busca o diretório que contém a pasta `.git` a partir de ``start_dir``."""
+    path = os.path.abspath(start_dir)
+    while True:
+        if os.path.isdir(os.path.join(path, ".git")):
+            return path
+        parent = os.path.dirname(path)
+        if parent == path:
+            return None
+        path = parent
+
 FAVORITES_FILE = "favorites.json"
 
 
@@ -138,10 +152,13 @@ def salvar_paleta_sobre_imagem(caminho, imagem, cores, pos):
 
 def atualizar_programa():
     """Tenta atualizar o repositório local executando `git pull`."""
-    if not os.path.isdir(".git"):
+    repo_dir = find_git_root()
+    if not repo_dir:
         return "Repositório Git não encontrado."
     try:
-        result = subprocess.run(["git", "pull"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["git", "pull"], capture_output=True, text=True, cwd=repo_dir
+        )
         if result.returncode == 0:
             return "Atualização concluída:\n" + result.stdout
         return "Erro ao atualizar:\n" + result.stderr
