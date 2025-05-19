@@ -52,7 +52,11 @@ def favoritar_paleta(nome, cores):
 
 
 def gerar_paleta(imagem, num_cores):
-    cores, porcentagens = extrair_cores_percentual(imagem, n_cores=num_cores)
+    try:
+        cores, porcentagens = extrair_cores_percentual(imagem, n_cores=num_cores)
+    except BaseException as exc:  # noqa: BLE001
+        html = f"<p style='color:red'>Erro ao extrair cores: {exc}</p>"
+        return html, None, []
     blocos = "".join(
         f"<div style='width:40px;height:40px;background:{c};'></div>" for c in cores
     )
