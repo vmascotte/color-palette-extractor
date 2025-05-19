@@ -104,6 +104,52 @@ def save_palette(img_path, hexes):
     img.save(img_path, format="PNG")
 
 
+def overlay_palette_on_image(img_path, hexes, position="bottom_right"):
+    """Sobrep\u00f5e a paleta sobre a imagem de entrada.
+
+    Parameters
+    ----------
+    img_path : str
+        Caminho da imagem base.
+    hexes : list[str]
+        Lista de cores em formato hexadecimal.
+    position : str, optional
+        Posi\u00e7\u00e3o da paleta (``top_left``, ``top_right``, ``bottom_left``,
+        ``bottom_right`` ou ``center``).
+
+    Returns
+    -------
+    PIL.Image.Image
+        Imagem resultante com a paleta sobreposta.
+    """
+
+    if not hexes:
+        raise ValueError("Lista de cores vazia.")
+
+    base = Image.open(img_path).convert("RGB")
+    block_size = 50
+    width = block_size * len(hexes)
+    height = block_size
+    pal_img = Image.new("RGB", (width, height), "white")
+    draw = ImageDraw.Draw(pal_img)
+    for idx, color in enumerate(hexes):
+        x0 = idx * block_size
+        draw.rectangle([x0, 0, x0 + block_size, height], fill=color)
+
+    bw, bh = base.size
+    positions = {
+        "top_left": (0, 0),
+        "top_right": (bw - width, 0),
+        "bottom_left": (0, bh - height),
+        "bottom_right": (bw - width, bh - height),
+        "center": ((bw - width) // 2, (bh - height) // 2),
+    }
+    x, y = positions.get(position, positions["bottom_right"])
+
+    base.paste(pal_img, (x, y))
+    return base
+
+
 def plot_pie_chart(hexes, porcentagens):
     """Exibe um gráfico de pizza com as porcentagens das cores."""
     fig, ax = plt.subplots()

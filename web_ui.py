@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import gradio as gr
-from palette import extrair_cores_percentual, save_palette
+from palette import extrair_cores_percentual, save_palette, overlay_palette_on_image
 import matplotlib.pyplot as plt
 from io import BytesIO
 from PIL import Image
@@ -41,23 +41,13 @@ def gerar_html_favoritos():
     return "<br>".join(partes)
 
 
-def favoritar_paleta(nome, cores):
-    if not cores:
-        return "Nenhuma paleta gerada ainda.", gerar_html_favoritos()
-    if not nome.strip():
-        return "Informe um nome para a paleta.", gerar_html_favoritos()
-    favoritos = carregar_favoritos()
-    favoritos.append({"nome": nome.strip(), "cores": cores})
-    salvar_favoritos(favoritos)
-    return f"Paleta '{nome}' salva.", gerar_html_favoritos()
+def lista_nomes_favoritos():
+    """Retorna somente os nomes das paletas favoritadas."""
+    return [fav.get("nome") for fav in carregar_favoritos()]
 
 
-def gerar_paleta(imagem, num_cores):
-    try:
-        cores, porcentagens = extrair_cores_percentual(imagem, n_cores=num_cores)
-    except BaseException as exc:  # noqa: BLE001
-        html = f"<p style='color:red'>Erro ao extrair cores: {exc}</p>"
-        return html, None, []
+def montar_paleta_html_grafico(cores, porcentagens):
+    """Gera o HTML e o grafico da paleta."""
     blocos = "".join(
         f"<div style='width:40px;height:40px;background:{c};'></div>" for c in cores
     )
@@ -76,8 +66,53 @@ def gerar_paleta(imagem, num_cores):
     plt.close(fig)
     buf.seek(0)
     grafico = Image.open(buf)
+    return html, grafico
 
-    return html, grafico, cores
+
+def carregar_favorito(nome):
+    favoritos = carregar_favoritos()
+    for fav in favoritos:
+        if fav.get("nome") == nome:
+            html, graf = montar_paleta_html_grafico(fav["cores"], fav["porcentagens"])
+            return (
+                html,
+                graf,
+                fav["imagem"],
+                fav["cores"],
+                fav["porcentagens"],
+                gr.Tabs.update(selected="Extrair"),
+            )
+    return "", None, None, [], [], gr.Tabs.update()
+
+
+def favoritar_paleta(nome, cores, imagem, porcentagens):
+    if not cores:
+        return "Nenhuma paleta gerada ainda.", gerar_html_favoritos(), []
+    if not nome.strip():
+        return "Informe um nome para a paleta.", gerar_html_favoritos(), []
+    if not imagem:
+        return "Nenhuma imagem carregada.", gerar_html_favoritos(), []
+    favoritos = carregar_favoritos()
+    favoritos.append(
+        {
+            "nome": nome.strip(),
+            "cores": cores,
+            "imagem": imagem,
+            "porcentagens": porcentagens,
+        }
+    )
+    salvar_favoritos(favoritos)
+    return f"Paleta '{nome}' salva.", gerar_html_favoritos(), lista_nomes_favoritos()
+
+
+def gerar_paleta(imagem, num_cores):
+    try:
+        cores, porcentagens = extrair_cores_percentual(imagem, n_cores=num_cores)
+    except BaseException as exc:  # noqa: BLE001
+        html = f"<p style='color:red'>Erro ao extrair cores: {exc}</p>"
+        return html, None, [], []
+    html, grafico = montar_paleta_html_grafico(cores, porcentagens)
+    return html, grafico, cores, porcentagens
 
 
 def salvar_paleta(caminho, cores):
@@ -88,6 +123,17 @@ def salvar_paleta(caminho, cores):
         return f"Paleta salva em {caminho}"
     except Exception as exc:
         return f"Erro ao salvar paleta: {exc}"
+
+
+def salvar_paleta_sobre_imagem(caminho, imagem, cores, pos):
+    if not cores or not imagem:
+        return "Gere a paleta primeiro e carregue uma imagem." 
+    try:
+        img = overlay_palette_on_image(imagem, cores, pos)
+        img.save(caminho)
+        return f"Imagem salva em {caminho}"
+    except Exception as exc:  # noqa: BLE001
+        return f"Erro ao salvar: {exc}"
 
 
 def atualizar_programa():
@@ -106,8 +152,12 @@ def atualizar_programa():
 def main():
     with gr.Blocks() as demo:
         gr.Markdown("## Color Palette Extractor")
-        with gr.Tabs(selected=1):
+        with gr.Tabs(selected="Extrair") as abas:
             with gr.Tab("Favoritas"):
+                fav_dropdown = gr.Dropdown(
+                    choices=lista_nomes_favoritos(), label="Paletas Salvas"
+                )
+                carregar_fav = gr.Button("Carregar")
                 favoritos_html = gr.HTML(gerar_html_favoritos())
             with gr.Tab("Extrair"):
                 with gr.Row():
@@ -116,26 +166,50 @@ def main():
                 saida = gr.HTML()
                 grafico = gr.Image(label="Distribuição")
                 cores_state = gr.State([])
+                porcent_state = gr.State([])
                 caminho_paleta = gr.Textbox("paleta.png", label="Salvar como")
                 nome_favorito = gr.Textbox(label="Nome da Paleta")
                 status = gr.Textbox(label="Status", interactive=False)
                 status_fav = gr.Textbox(label="Status Favorito", interactive=False)
+                pos_overlay = gr.Dropdown(
+                    [
+                        "top_left",
+                        "top_right",
+                        "bottom_left",
+                        "bottom_right",
+                        "center",
+                    ],
+                    value="bottom_right",
+                    label="Posição da Paleta",
+                )
+                caminho_overlay = gr.Textbox("overlay.png", label="Salvar imagem com paleta")
 
                 executar = gr.Button("Extrair Cores")
                 salvar = gr.Button("Salvar Paleta")
+                salvar_overlay = gr.Button("Salvar Sobre Imagem")
                 favoritar = gr.Button("Favoritar")
                 atualizar = gr.Button("Atualizar Programa")
 
                 executar.click(
                     gerar_paleta,
                     [entrada_imagem, entrada_num_cores],
-                    [saida, grafico, cores_state],
+                    [saida, grafico, cores_state, porcent_state],
                 )
                 salvar.click(salvar_paleta, [caminho_paleta, cores_state], status)
+                salvar_overlay.click(
+                    salvar_paleta_sobre_imagem,
+                    [caminho_overlay, entrada_imagem, cores_state, pos_overlay],
+                    status,
+                )
+                carregar_fav.click(
+                    carregar_favorito,
+                    fav_dropdown,
+                    [saida, grafico, entrada_imagem, cores_state, porcent_state, abas],
+                )
                 favoritar.click(
                     favoritar_paleta,
-                    [nome_favorito, cores_state],
-                    [status_fav, favoritos_html],
+                    [nome_favorito, cores_state, entrada_imagem, porcent_state],
+                    [status_fav, favoritos_html, fav_dropdown],
                 )
                 atualizar.click(atualizar_programa, outputs=status)
 
