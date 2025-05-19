@@ -129,23 +129,37 @@ def gerar_paleta(imagem, num_cores):
     return html, grafico, cores, porcentagens
 
 
-def salvar_paleta(caminho, cores):
+def salvar_paleta(diretorio, nome_arquivo, cores):
+    """Salva a imagem da paleta no diretório escolhido."""
     if not cores:
         return "Nenhuma paleta gerada ainda."
+
+    if os.path.isabs(nome_arquivo):
+        caminho = nome_arquivo
+    else:
+        caminho = os.path.join(diretorio, nome_arquivo)
+
     try:
         save_palette(caminho, cores)
-        return f"Paleta salva em {caminho}"
+        return f"Paleta salva em {os.path.abspath(caminho)}"
     except Exception as exc:
         return f"Erro ao salvar paleta: {exc}"
 
 
-def salvar_paleta_sobre_imagem(caminho, imagem, cores, pos):
+def salvar_paleta_sobre_imagem(diretorio, nome_arquivo, imagem, cores, pos):
+    """Salva a imagem original com a paleta sobreposta no local escolhido."""
     if not cores or not imagem:
-        return "Gere a paleta primeiro e carregue uma imagem." 
+        return "Gere a paleta primeiro e carregue uma imagem."
+
+    if os.path.isabs(nome_arquivo):
+        caminho = nome_arquivo
+    else:
+        caminho = os.path.join(diretorio, nome_arquivo)
+
     try:
         img = overlay_palette_on_image(imagem, cores, pos)
         img.save(caminho)
-        return f"Imagem salva em {caminho}"
+        return f"Imagem salva em {os.path.abspath(caminho)}"
     except Exception as exc:  # noqa: BLE001
         return f"Erro ao salvar: {exc}"
 
@@ -184,7 +198,8 @@ def main():
                 grafico = gr.Image(label="Distribuição")
                 cores_state = gr.State([])
                 porcent_state = gr.State([])
-                caminho_paleta = gr.Textbox("paleta.png", label="Salvar como")
+                caminho_paleta = gr.Textbox("paleta.png", label="Nome do arquivo")
+                diretorio_paleta = gr.Textbox(".", label="Diretório da paleta")
                 nome_favorito = gr.Textbox(label="Nome da Paleta")
                 status = gr.Textbox(label="Status", interactive=False)
                 status_fav = gr.Textbox(label="Status Favorito", interactive=False)
@@ -199,7 +214,8 @@ def main():
                     value="bottom_right",
                     label="Posição da Paleta",
                 )
-                caminho_overlay = gr.Textbox("overlay.png", label="Salvar imagem com paleta")
+                caminho_overlay = gr.Textbox("overlay.png", label="Nome do arquivo da imagem")
+                diretorio_overlay = gr.Textbox(".", label="Diretório da imagem gerada")
 
                 executar = gr.Button("Extrair Cores")
                 salvar = gr.Button("Salvar Paleta")
@@ -212,10 +228,20 @@ def main():
                     [entrada_imagem, entrada_num_cores],
                     [saida, grafico, cores_state, porcent_state],
                 )
-                salvar.click(salvar_paleta, [caminho_paleta, cores_state], status)
+                salvar.click(
+                    salvar_paleta,
+                    [diretorio_paleta, caminho_paleta, cores_state],
+                    status,
+                )
                 salvar_overlay.click(
                     salvar_paleta_sobre_imagem,
-                    [caminho_overlay, entrada_imagem, cores_state, pos_overlay],
+                    [
+                        diretorio_overlay,
+                        caminho_overlay,
+                        entrada_imagem,
+                        cores_state,
+                        pos_overlay,
+                    ],
                     status,
                 )
                 carregar_fav.click(
