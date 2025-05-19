@@ -33,12 +33,18 @@ Para extrair as cores de uma imagem, execute:
 
 ```bash
 python palette.py caminho/da/imagem
+# ou
+./palette.py caminho/da/imagem
 ```
+Se optar pela segunda forma, certifique-se de que o arquivo esteja com permissão
+de execução (`chmod +x palette.py`).
 
 Por exemplo, usando a imagem de exemplo fornecida (`1.PNG`):
 
 ```bash
 python palette.py 1.PNG
+# ou
+./palette.py 1.PNG
 ```
 
 ### Saída determinística
@@ -49,6 +55,9 @@ Para obter os mesmos resultados em execuções subsequentes, forneça um
 ```bash
 python palette.py 1.PNG -r 42
 python palette.py 1.PNG -r 42
+# ou
+./palette.py 1.PNG -r 42
+./palette.py 1.PNG -r 42
 ```
 
 As cores impressas serão as mesmas nas duas execuções.
@@ -58,6 +67,8 @@ Para visualizar um gráfico de pizza com a porcentagem de cada cor, utilize a op
 
 ```bash
 python palette.py 1.PNG --grafico
+# ou
+./palette.py 1.PNG --grafico
 ```
 
 ### Gerar imagem da paleta
@@ -78,7 +89,10 @@ Execute:
 
 ```bash
 python web_ui.py
+# ou
+./web_ui.py
 ```
+Para executá-lo diretamente, lembre-se de tornar o arquivo executável (`chmod +x web_ui.py`).
 
 O navegador padrão será aberto automaticamente, exibindo um seletor de imagem e o número de cores desejado. Após enviar a imagem, as cores extraídas aparecerão na tela. Há também um campo para definir o nome do arquivo de saída e um botão **Salvar Paleta**, que gera uma imagem PNG com as cores exibidas.
 Um gráfico de pizza mostrando a porcentagem de cada cor é exibido junto da paleta.
