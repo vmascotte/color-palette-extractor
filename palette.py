@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from PIL import Image, UnidentifiedImageError, ImageDraw
 import numpy as np
 from sklearn.cluster import KMeans

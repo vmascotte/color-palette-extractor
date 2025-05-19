@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import gradio as gr
 from palette import extrair_cores_percentual, save_palette
 import matplotlib.pyplot as plt
