@@ -192,36 +192,33 @@ def main():
                 favoritos_html = gr.HTML(gerar_html_favoritos())
             with gr.Tab("Extrair"):
                 with gr.Row():
-                    entrada_imagem = gr.Image(type="filepath", label="Imagem")
-                    entrada_num_cores = gr.Slider(1, 10, value=5, step=1, label="N\u00famero de cores")
-                saida = gr.HTML()
-                grafico = gr.Image(label="Distribuição")
+                    with gr.Column():
+                        entrada_imagem = gr.Image(type="filepath", label="Imagem")
+                        entrada_num_cores = gr.Slider(1, 10, value=5, step=1, label="Número de cores")
+                        caminho_paleta = gr.Textbox("paleta.png", label="Nome do arquivo")
+                        diretorio_paleta = gr.Textbox(".", label="Diretório da paleta")
+                        caminho_overlay = gr.Textbox("overlay.png", label="Nome do arquivo da imagem")
+                        diretorio_overlay = gr.Textbox(".", label="Diretório da imagem gerada")
+                        pos_overlay = gr.Dropdown([
+                            "top_left",
+                            "top_right",
+                            "bottom_left",
+                            "bottom_right",
+                            "center",
+                        ], value="bottom_right", label="Posição da Paleta")
+                        nome_favorito = gr.Textbox(label="Nome da Paleta")
+                        executar = gr.Button("Extrair Cores")
+                        salvar = gr.Button("Salvar Paleta")
+                        salvar_overlay = gr.Button("Salvar Sobre Imagem")
+                        favoritar = gr.Button("Favoritar")
+                        atualizar = gr.Button("Atualizar Programa")
+                    with gr.Column():
+                        saida = gr.HTML()
+                        grafico = gr.Image(label="Distribuição")
+                        status = gr.Textbox(label="Status", interactive=False)
+                        status_fav = gr.Textbox(label="Status Favorito", interactive=False)
                 cores_state = gr.State([])
                 porcent_state = gr.State([])
-                caminho_paleta = gr.Textbox("paleta.png", label="Nome do arquivo")
-                diretorio_paleta = gr.Textbox(".", label="Diretório da paleta")
-                nome_favorito = gr.Textbox(label="Nome da Paleta")
-                status = gr.Textbox(label="Status", interactive=False)
-                status_fav = gr.Textbox(label="Status Favorito", interactive=False)
-                pos_overlay = gr.Dropdown(
-                    [
-                        "top_left",
-                        "top_right",
-                        "bottom_left",
-                        "bottom_right",
-                        "center",
-                    ],
-                    value="bottom_right",
-                    label="Posição da Paleta",
-                )
-                caminho_overlay = gr.Textbox("overlay.png", label="Nome do arquivo da imagem")
-                diretorio_overlay = gr.Textbox(".", label="Diretório da imagem gerada")
-
-                executar = gr.Button("Extrair Cores")
-                salvar = gr.Button("Salvar Paleta")
-                salvar_overlay = gr.Button("Salvar Sobre Imagem")
-                favoritar = gr.Button("Favoritar")
-                atualizar = gr.Button("Atualizar Programa")
 
                 executar.click(
                     gerar_paleta,
