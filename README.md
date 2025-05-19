@@ -123,3 +123,8 @@ batch.
 ## Objetivo do projeto
 
 O propósito deste repositório é demonstrar como identificar as cores predominantes de uma imagem utilizando clustering (via KMeans). 
+
+## Licen\xc3\xa7a
+
+Este projeto \xc3\xa9 disponibilizado sob a licen\xc3\xa7a MIT. Consulte o arquivo [LICENSE](LICENSE) para mais informa\xc3\xa7\xc3\xb5es.
+
