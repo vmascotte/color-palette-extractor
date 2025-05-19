@@ -101,7 +101,9 @@ def atualizar_programa():
 def main():
     with gr.Blocks() as demo:
         gr.Markdown("## Color Palette Extractor")
-        with gr.Tabs():
+        with gr.Tabs(selected=1):
+            with gr.Tab("Favoritas"):
+                favoritos_html = gr.HTML(gerar_html_favoritos())
             with gr.Tab("Extrair"):
                 with gr.Row():
                     entrada_imagem = gr.Image(type="filepath", label="Imagem")
@@ -131,8 +133,7 @@ def main():
                     [status_fav, favoritos_html],
                 )
                 atualizar.click(atualizar_programa, outputs=status)
-            with gr.Tab("Favoritas"):
-                favoritos_html = gr.HTML(gerar_html_favoritos())
+
     demo.launch(inbrowser=True)
 
 
