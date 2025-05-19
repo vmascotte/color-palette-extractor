@@ -107,12 +107,13 @@ def favoritar_paleta(nome, cores, imagem, porcentagens):
     if not imagem:
         return "Nenhuma imagem carregada.", gerar_html_favoritos(), []
     favoritos = carregar_favoritos()
+    porcent_list = [float(x) for x in porcentagens]
     favoritos.append(
         {
             "nome": nome.strip(),
             "cores": cores,
             "imagem": imagem,
-            "porcentagens": porcentagens,
+            "porcentagens": porcent_list,
         }
     )
     salvar_favoritos(favoritos)
