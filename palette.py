@@ -22,20 +22,27 @@ def extrair_cores_percentual(imagem, n_cores=5, random_state=None):
     -------
     tuple[list[str], np.ndarray]
         Lista de cores em hexadecimal e vetor com as frações correspondentes.
+
+    Raises
+    ------
+    FileNotFoundError
+        Se o arquivo da imagem não existir.
+    ValueError
+        Se o arquivo não puder ser aberto como imagem ou se ``n_cores`` for menor que 1.
     """
 
     try:
         img = Image.open(imagem).convert("RGB")
-    except (FileNotFoundError, UnidentifiedImageError, OSError):
-        print(f"Error: file '{imagem}' not found or cannot be opened.", file=sys.stderr)
-        sys.exit(1)
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Arquivo '{imagem}' não encontrado.") from e
+    except (UnidentifiedImageError, OSError) as e:
+        raise ValueError(f"Arquivo '{imagem}' não pôde ser aberto como imagem.") from e
 
     img = img.resize((200, 200))
     pixels = np.array(img).reshape(-1, 3)
 
     if n_cores < 1:
-        print("Número de cores deve ser no mínimo 1.", file=sys.stderr)
-        sys.exit(1)
+        raise ValueError("Número de cores deve ser no mínimo 1.")
 
     n_cores_max = len(np.unique(pixels, axis=0))
     if n_cores > n_cores_max:
@@ -57,7 +64,11 @@ def extrair_cores_percentual(imagem, n_cores=5, random_state=None):
     return hex_cores, porcentagens
 
 def extrair_cores(imagem, n_cores=5, random_state=None):
-    """Mantém compatibilidade e retorna apenas as cores."""
+    """Mantém compatibilidade e retorna apenas as cores.
+
+    Este método propaga as exceções levantadas por
+    :func:`extrair_cores_percentual`.
+    """
     hex_cores, _ = extrair_cores_percentual(imagem, n_cores, random_state)
     return hex_cores
 
@@ -71,6 +82,11 @@ def save_palette(img_path, hexes):
         Caminho do arquivo PNG a ser salvo.
     hexes : list[str]
         Lista de cores em formato hexadecimal (#rrggbb).
+
+    Raises
+    ------
+    ValueError
+        Se ``hexes`` estiver vazio.
     """
 
     if not hexes:
@@ -114,9 +130,14 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    hexes, porcentagens = extrair_cores_percentual(
-        args.imagem, args.num_cores, args.random_state
-    )
+    try:
+        hexes, porcentagens = extrair_cores_percentual(
+            args.imagem, args.num_cores, args.random_state
+        )
+    except (FileNotFoundError, ValueError) as exc:
+        print(exc, file=sys.stderr)
+        sys.exit(1)
+
     for cor in hexes:
         print(cor)
     if args.grafico:
