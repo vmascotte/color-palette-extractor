@@ -2,6 +2,13 @@
 
 Este projeto tem como objetivo extrair uma paleta de cores dominante de uma imagem usando KMeans.
 
+## Baixar como ZIP
+
+Se preferir obter o programa sem utilizar o `git clone`, 
+você pode baixar o repositório compactado diretamente pelo link:
+<https://github.com/vmascotte/color-palette-extractor/archive/refs/heads/master.zip>.
+Após extrair o arquivo, siga as instruções abaixo normalmente.
+
 ## Requisitos de ambiente
 
 - Python 3.8 ou superior
