@@ -101,7 +101,8 @@ python web_ui.py
 ```
 Para executá-lo diretamente, lembre-se de tornar o arquivo executável (`chmod +x web_ui.py`).
 
-O navegador padrão será aberto automaticamente, exibindo um seletor de imagem e o número de cores desejado. Após enviar a imagem, as cores extraídas aparecerão na tela. Há também um campo para definir o nome do arquivo de saída e um botão **Salvar Paleta**, que gera uma imagem PNG com as cores exibidas.
+O navegador padrão será aberto automaticamente, exibindo um seletor de imagem e o número de cores desejado. Após enviar a imagem, as cores extraídas aparecerão na tela. Há também campos para definir o diretório e o nome do arquivo de saída e um botão **Salvar Paleta**, que gera uma imagem PNG com as cores exibidas.
+Da mesma forma, é possível escolher o diretório e o nome do arquivo ao salvar a imagem original com a paleta sobreposta.
 Um gráfico de pizza mostrando a porcentagem de cada cor é exibido junto da paleta.
 
 ### Atualização do programa
